@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Izjava o zasebnosti – JedroPlus aplikacija</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f9fafb;
+      color: #1f2937;
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .pp-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 56px 24px 48px;
+      text-align: center;
+    }
+
+    .pp-header-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .pp-shield {
+      font-size: 52px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .pp-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .pp-header p {
+      font-size: 1rem;
+      opacity: 0.85;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .pp-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      background: rgba(255,255,255,0.15);
+      padding: 8px 18px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Main content */
+    .pp-content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* Table of contents */
+    .pp-toc {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 40px;
+    }
+
+    .pp-toc h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 16px;
+    }
+
+    .pp-toc ol {
+      padding-left: 20px;
+      color: #4b5563;
+    }
+
+    .pp-toc li {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .pp-toc a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .pp-toc a:hover {
+      color: #4f46e5;
+      text-decoration: underline;
+    }
+
+    /* Sections */
+    .pp-section {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    .pp-section h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #f3f4f6;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pp-section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pp-section p {
+      font-size: 15px;
+      color: #374151;
+      margin-bottom: 14px;
+    }
+
+    .pp-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .pp-section ul,
+    .pp-section ol {
+      padding-left: 22px;
+      margin: 10px 0 14px;
+    }
+
+    .pp-section li {
+      font-size: 15px;
+      color: #374151;
+      margin: 8px 0;
+      line-height: 1.65;
+    }
+
+    .pp-section strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    /* Info boxes */
+    .pp-box {
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 18px 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .pp-box-info {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      color: #1e40af;
+    }
+
+    .pp-box-success {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      color: #15803d;
+    }
+
+    .pp-box-warning {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      color: #92400e;
+    }
+
+    .pp-box p {
+      margin: 0;
+      font-size: 14px;
+      color: inherit;
+    }
+
+    /* Data table */
+    .pp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+
+    .pp-table th {
+      background: #f9fafb;
+      font-weight: 600;
+      color: #374151;
+      text-align: left;
+      padding: 12px 16px;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .pp-table td {
+      padding: 12px 16px;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      vertical-align: top;
+    }
+
+    .pp-table tr:nth-child(even) td {
+      background: #f9fafb;
+    }
+
+    /* Contact card */
+    .pp-contact-card {
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+      border: 1px solid #ddd6fe;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-top: 16px;
+    }
+
+    .pp-contact-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #4c1d95;
+      margin-bottom: 12px;
+    }
+
+    .pp-contact-card p {
+      font-size: 14px;
+      color: #5b21b6;
+      margin: 6px 0;
+    }
+
+    .pp-contact-card a {
+      color: #7c3aed;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .pp-contact-card a:hover {
+      text-decoration: underline;
+    }
+
+    /* Rights list */
+    .pp-rights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .pp-right-item {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+
+    .pp-right-item .right-icon {
+      font-size: 22px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .pp-right-item h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+
+    .pp-right-item p {
+      font-size: 13px;
+      color: #6b7280;
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    /* Back button */
+    .pp-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      color: #667eea;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: gap 0.2s;
+    }
+
+    .pp-back-btn:hover {
+      gap: 12px;
+    }
+
+    /* Footer */
+    .pp-footer {
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .pp-footer p {
+      font-size: 13px;
+      color: #9ca3af;
+      margin: 4px 0;
+    }
+
+    .pp-footer a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .pp-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .pp-section {
+        padding: 22px 18px;
+      }
+
+      .pp-toc {
+        padding: 20px 18px;
+      }
+
+      .pp-rights-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pp-table {
+        font-size: 13px;
+      }
+
+      .pp-table th,
+      .pp-table td {
+        padding: 10px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="pp-header">
+    <div class="pp-header-inner">
+      <span class="pp-shield">🛡️</span>
+      <h1>Izjava o zasebnosti</h1>
+      <p>Varstvo vaših osebnih podatkov je za nas prioriteta. Tukaj smo pregledni glede tega, kaj zbiramo in zakaj.</p>
+      <div class="pp-meta">
+        📅 Zadnja posodobitev: 1. marca 2026
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="pp-content">
+
+    <a class="pp-back-btn" onclick="window.close()" href="javascript:void(0)">
+      ← Zapri
+    </a>
+
+    <!-- Table of Contents -->
+    <div class="pp-toc">
+      <h2>Vsebina</h2>
+      <ol>
+        <li><a href="#upravljavec">Upravljavec osebnih podatkov</a></li>
+        <li><a href="#podatki">Katere podatke zbiramo</a></li>
+        <li><a href="#namen">Namen in pravna podlaga za obdelavo</a></li>
+        <li><a href="#shranjevanje">Kje se podatki shranjujejo</a></li>
+        <li><a href="#rok">Rok hrambe podatkov</a></li>
+        <li><a href="#posredovanje">Posredovanje podatkov tretjim osebam</a></li>
+        <li><a href="#pravice">Vaše pravice</a></li>
+        <li><a href="#piskotki">Piškotki in lokalno shranjevanje</a></li>
+        <li><a href="#varnost">Varnost podatkov</a></li>
+        <li><a href="#pritozba">Pravica do pritožbe</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ol>
+    </div>
+
+    <!-- Section 1: Upravljavec -->
+    <section class="pp-section" id="upravljavec">
+      <h2>
+        <span class="pp-section-num">1</span>
+        Upravljavec osebnih podatkov
+      </h2>
+      <p>
+        Upravljavec osebnih podatkov je:
+      </p>
+      <div class="pp-contact-card">
+        <h3>JedroPlus aplikacija</h3>
+        <p><strong>Tim Kogej s.p.</strong></p>
+        <p>📧 E-pošta: <a href="mailto:info@jedroplus.com">info@jedroplus.com</a></p>
+        <p>🌐 Spletna stran: <a href="https://jedroplus.com" target="_blank" rel="noopener">jedroplus.com</a></p>
+        <p>📍 Slovenija</p>
+      </div>
+      <p>
+        Osebne podatke obdelujemo v skladu z Uredbo (EU) 2016/679 (GDPR) in veljavno slovensko
+        zakonodajo o varstvu osebnih podatkov.
+      </p>
+    </section>
+
+    <!-- Section 2: Podatki -->
+    <section class="pp-section" id="podatki">
+      <h2>
+        <span class="pp-section-num">2</span>
+        Katere podatke zbiramo
+      </h2>
+      <p>Ko uporabljate naš klepetalnik, zbiramo naslednje podatke:</p>
+
+      <table class="pp-table">
+        <thead>
+          <tr>
+            <th>Vrsta podatka</th>
+            <th>Opis</th>
+            <th>Obvezno</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Vsebina sporočil</strong></td>
+            <td>Besedilo, ki ga vnesete v klepetalnik</td>
+            <td>Da</td>
+          </tr>
+          <tr>
+            <td><strong>ID seje</strong></td>
+            <td>Naključno generiran identifikator pogovora</td>
+            <td>Da</td>
+          </tr>
+          <tr>
+            <td><strong>Oznaka podjetja</strong></td>
+            <td>Identifikator podjetja, ki klepetalnik uporablja</td>
+            <td>Da</td>
+          </tr>
+          <tr>
+            <td><strong>Časovni žig</strong></td>
+            <td>Čas pošiljanja sporočila</td>
+            <td>Da</td>
+          </tr>
+          <tr>
+            <td><strong>E-poštni naslov</strong></td>
+            <td>Samo če ga v pogovoru prostovoljno posredujete</td>
+            <td>Ne</td>
+          </tr>
+          <tr>
+            <td><strong>Podatki o terminih</strong></td>
+            <td>Informacije o rezervacijah, če jih klepetalnik zbere</td>
+            <td>Ne</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pp-box pp-box-info">
+        <p>Ne zbiramo vaše IP-adrese, lokacije, podatkov naprave ali piškotkov za sledenje.</p>
+      </div>
+    </section>
+
+    <!-- Section 3: Namen -->
+    <section class="pp-section" id="namen">
+      <h2>
+        <span class="pp-section-num">3</span>
+        Namen in pravna podlaga za obdelavo
+      </h2>
+      <p>Vaše osebne podatke obdelujemo za naslednje namene:</p>
+      <ul>
+        <li>
+          <strong>Zagotavljanje storitve klepetalnika</strong> — za odgovarjanje na vaša vprašanja
+          in upravljanje pogovora (pravna podlaga: privolitev po členu 6(1)(a) GDPR)
+        </li>
+        <li>
+          <strong>Rezervacija terminov</strong> — za obdelavo in potrjevanje rezervacij, ki jih
+          podate v klepetu (pravna podlaga: izvajanje pogodbe po členu 6(1)(b) GDPR)
+        </li>
+        <li>
+          <strong>E-poštna obvestila</strong> — za pošiljanje potrditve rezervacije ali
+          obvestil o terminih na vaš e-poštni naslov, če ga posredujete
+          (pravna podlaga: privolitev po členu 6(1)(a) GDPR)
+        </li>
+        <li>
+          <strong>Izboljšanje storitve</strong> — anonimna analiza pogovorov za izboljšanje
+          delovanja klepetalnika (pravna podlaga: zakoniti interes po členu 6(1)(f) GDPR)
+        </li>
+      </ul>
+      <div class="pp-box pp-box-warning">
+        <p>Svojo privolitev lahko kadar koli prekličete s klikom na ikono ščita v glavi klepetalnika. Po preklicu bodo vaši podatki izbrisani v skladu z roki hrambe.</p>
+      </div>
+    </section>
+
+    <!-- Section 4: Shranjevanje -->
+    <section class="pp-section" id="shranjevanje">
+      <h2>
+        <span class="pp-section-num">4</span>
+        Kje se podatki shranjujejo
+      </h2>
+      <p>Vaši podatki se shranjujejo pri naslednjih ponudnikih:</p>
+
+      <table class="pp-table">
+        <thead>
+          <tr>
+            <th>Ponudnik</th>
+            <th>Namen</th>
+            <th>Lokacija strežnikov</th>
+            <th>Certifikati</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Supabase</strong></td>
+            <td>Shramba pogovorov in podatkov o rezervacijah</td>
+            <td>Evropska unija (Frankfurt, DE)</td>
+            <td>SOC 2 Type 2, ISO 27001</td>
+          </tr>
+          <tr>
+            <td><strong>n8n Cloud</strong></td>
+            <td>Avtomatizacija in obdelava sporočil</td>
+            <td>Evropska unija</td>
+            <td>GDPR skladen</td>
+          </tr>
+          <tr>
+            <td><strong>Bulk.si (Bulk Gate)</strong></td>
+            <td>Pošiljanje e-poštnih obvestil</td>
+            <td>Evropska unija</td>
+            <td>GDPR skladen</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pp-box pp-box-success">
+        <p>Vsi podatki ostanejo znotraj Evropske unije. Podatkov ne prenašamo v tretje države zunaj EU/EGP.</p>
+      </div>
+    </section>
+
+    <!-- Section 5: Rok hrambe -->
+    <section class="pp-section" id="rok">
+      <h2>
+        <span class="pp-section-num">5</span>
+        Rok hrambe podatkov
+      </h2>
+      <p>Vaše podatke hranimo le toliko časa, kolikor je potrebno za dosego namena zbiranja:</p>
+      <ul>
+        <li><strong>Pogovori v klepetu:</strong> 90 dni od datuma pogovora</li>
+        <li><strong>Podatki o rezervacijah:</strong> 12 mesecev po zaključenem terminu</li>
+        <li><strong>E-poštna obvestila (evidenca):</strong> 6 mesecev</li>
+        <li><strong>Privolitev (consent):</strong> 3 leta ali do preklica</li>
+      </ul>
+      <p>
+        Po poteku roka hrambe se podatki samodejno in trajno izbrišejo iz naših sistemov.
+        Zahtevate lahko tudi predčasno brisanje (glejte razdelek 7 – Vaše pravice).
+      </p>
+    </section>
+
+    <!-- Section 6: Posredovanje -->
+    <section class="pp-section" id="posredovanje">
+      <h2>
+        <span class="pp-section-num">6</span>
+        Posredovanje podatkov tretjim osebam
+      </h2>
+      <p>
+        Vaših osebnih podatkov <strong>ne prodajamo</strong> in <strong>ne delimo</strong>
+        z oglaševalci ali drugimi nepovezanimi tretjimi osebami.
+      </p>
+      <p>Podatke posredujemo samo naslednjim obdelovalcem podatkov, ki delujejo po naših navodilih:</p>
+      <ul>
+        <li><strong>Supabase Inc.</strong> — infrastruktura za shranjevanje podatkov</li>
+        <li><strong>n8n GmbH</strong> — avtomatizacijska platforma</li>
+        <li><strong>Bulk Gate (Bulk.si)</strong> — platforma za e-poštna sporočila</li>
+      </ul>
+      <p>
+        Z vsemi obdelovalci imamo sklenjene pogodbe o obdelavi podatkov (DPA), ki zagotavljajo
+        enako raven varstva, kot ga določa GDPR.
+      </p>
+      <p>
+        V primeru zakonske obveznosti lahko podatke posredujemo pristojnim organom (sodišče,
+        policija, nadzorni organ), kar ne zahteva vaše privolitve.
+      </p>
+    </section>
+
+    <!-- Section 7: Pravice -->
+    <section class="pp-section" id="pravice">
+      <h2>
+        <span class="pp-section-num">7</span>
+        Vaše pravice
+      </h2>
+      <p>Kot posameznik, na katerega se nanašajo osebni podatki, imate po GDPR naslednje pravice:</p>
+
+      <div class="pp-rights-grid">
+        <div class="pp-right-item">
+          <span class="right-icon">👁️</span>
+          <h4>Pravica do dostopa</h4>
+          <p>Kadar koli zahtevate vpogled v podatke, ki jih hranimo o vas.</p>
+        </div>
+        <div class="pp-right-item">
+          <span class="right-icon">✏️</span>
+          <h4>Pravica do popravka</h4>
+          <p>Zahtevate popravek netočnih ali nepopolnih osebnih podatkov.</p>
+        </div>
+        <div class="pp-right-item">
+          <span class="right-icon">🗑️</span>
+          <h4>Pravica do izbrisa</h4>
+          <p>Zahtevate izbris vaših osebnih podatkov ("pravica do pozabe").</p>
+        </div>
+        <div class="pp-right-item">
+          <span class="right-icon">🚫</span>
+          <h4>Pravica do ugovora</h4>
+          <p>Ugovarjate obdelavi podatkov na podlagi zakonitega interesa.</p>
+        </div>
+        <div class="pp-right-item">
+          <span class="right-icon">📦</span>
+          <h4>Pravica do prenosljivosti</h4>
+          <p>Prejmete kopijo svojih podatkov v strojno berljivi obliki.</p>
+        </div>
+        <div class="pp-right-item">
+          <span class="right-icon">⏸️</span>
+          <h4>Pravica do omejitve</h4>
+          <p>Zahtevate omejitev obdelave vaših podatkov v določenih primerih.</p>
+        </div>
+      </div>
+
+      <div class="pp-box pp-box-info">
+        <p>
+          Za uveljavljanje katerekoli pravice nas kontaktirajte na
+          <strong><a href="mailto:info@jedroplus.com">info@jedroplus.com</a></strong>.
+          Na vašo zahtevo bomo odgovorili v roku 30 dni.
+        </p>
+      </div>
+
+      <p>
+        <strong>Preklic privolitve:</strong> Svojo privolitev za obdelavo podatkov v klepetalniku
+        lahko kadar koli prekličete s klikom na ikono ščita (🛡️) v glavi klepetalnika in nato
+        potrditvijo preklica. Preklic ne vpliva na zakonitost obdelave pred preklicem.
+      </p>
+    </section>
+
+    <!-- Section 8: Piškotki -->
+    <section class="pp-section" id="piskotki">
+      <h2>
+        <span class="pp-section-num">8</span>
+        Piškotki in lokalno shranjevanje
+      </h2>
+      <p>
+        Klepetalnik <strong>ne uporablja piškotkov</strong> za sledenje.
+        Uporablja pa naslednje mehanizme lokalnega shranjevanja:
+      </p>
+      <ul>
+        <li>
+          <strong>localStorage (privolitev):</strong> Shranjevanje vaše odločitve o privolitvi
+          (<code>jedroplus_chatbot_consent</code>), da vam ni treba vsakič znova potrjevati
+        </li>
+        <li>
+          <strong>sessionStorage (ID seje):</strong> Začasni identifikator pogovora, ki se
+          izbriše ob zaprtju brskalnika
+        </li>
+      </ul>
+      <p>
+        Ti podatki ostanejo izključno v vašem brskalniku in se ne pošiljajo na naše strežnike.
+        Jih lahko kadar koli izbrišete prek nastavitev brskalnika.
+      </p>
+    </section>
+
+    <!-- Section 9: Varnost -->
+    <section class="pp-section" id="varnost">
+      <h2>
+        <span class="pp-section-num">9</span>
+        Varnost podatkov
+      </h2>
+      <p>
+        Za zaščito vaših podatkov uporabljamo naslednje varnostne ukrepe:
+      </p>
+      <ul>
+        <li><strong>Šifriranje v prenosu:</strong> Vsa komunikacija poteka prek HTTPS/TLS 1.3</li>
+        <li><strong>Šifriranje v mirovanju:</strong> Podatki v bazi so šifrirani</li>
+        <li><strong>Dostopne kontrole:</strong> Omejen dostop do podatkov le za pooblaščene osebe</li>
+        <li><strong>Anonimni API ključi:</strong> Brskalnik komunicira s Supabase prek anonimnega ključa z omejenimi pravicami</li>
+        <li><strong>Redne varnostne revizije:</strong> Infrastruktura je redno pregledana</li>
+      </ul>
+      <p>
+        Kljub vsem ukrepom nobeno spletno okolje ni 100% varno. V primeru varnostnega incidenta,
+        ki bi prizadel vaše podatke, vas bomo v skladu z GDPR obvestili v 72 urah.
+      </p>
+    </section>
+
+    <!-- Section 10: Pritožba -->
+    <section class="pp-section" id="pritozba">
+      <h2>
+        <span class="pp-section-num">10</span>
+        Pravica do pritožbe
+      </h2>
+      <p>
+        Če menite, da obdelava vaših osebnih podatkov krši GDPR ali veljavno zakonodajo,
+        imate pravico vložiti pritožbo pri pristojnem nadzornem organu:
+      </p>
+      <div class="pp-contact-card">
+        <h3>Informacijski pooblaščenec Republike Slovenije</h3>
+        <p>📧 E-pošta: <a href="mailto:gp.ip@ip-rs.si">gp.ip@ip-rs.si</a></p>
+        <p>🌐 Spletna stran: <a href="https://www.ip-rs.si" target="_blank" rel="noopener">www.ip-rs.si</a></p>
+        <p>📞 Telefon: +386 1 230 97 30</p>
+        <p>📍 Dunajska cesta 22, 1000 Ljubljana</p>
+      </div>
+      <p>
+        Preden vložite pritožbo pri nadzornem organu, vas vabimo, da se najprej obrnete
+        na nas — večino težav rešimo hitro in prijazno.
+      </p>
+    </section>
+
+    <!-- Section 11: Kontakt -->
+    <section class="pp-section" id="kontakt">
+      <h2>
+        <span class="pp-section-num">11</span>
+        Kontakt
+      </h2>
+      <p>
+        Za vsa vprašanja v zvezi z zasebnostjo in varstvom osebnih podatkov smo dosegljivi:
+      </p>
+      <div class="pp-contact-card">
+        <h3>JedroPlus aplikacija – Tim Kogej s.p.</h3>
+        <p>📧 E-pošta: <a href="mailto:info@jedroplus.com">info@jedroplus.com</a></p>
+        <p>🌐 Spletna stran: <a href="https://jedroplus.com" target="_blank" rel="noopener">jedroplus.com</a></p>
+        <p>⏱️ Odzivni čas: do 3 delovnih dni</p>
+      </div>
+      <p>
+        Ta izjava o zasebnosti se lahko občasno posodobi. O bistvenih spremembah vas bomo
+        obvestili prek klepetalnika ali e-pošte (če smo vaš naslov pridobili). Datum zadnje
+        posodobitve je vedno naveden v glavi tega dokumenta.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="pp-footer">
+    <p>© 2026 JedroPlus aplikacija, Tim Kogej s.p. Vse pravice pridržane.</p>
+    <p>
+      Dokument je v skladu z Uredbo (EU) 2016/679 (GDPR) in Zakonom o varstvu osebnih podatkov (ZVOP-2).
+    </p>
+  </footer>
+
+</body>
+</html>

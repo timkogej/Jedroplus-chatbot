@@ -1,0 +1,17 @@
+{
+  "name": "chatbot-plus",
+  "version": "1.0.0",
+  "description": "A modern, embeddable chat widget with dynamic theming, smooth animations, and glassmorphism design. Perfect for customer support, sales, or any conversational AI experience.",
+  "main": "chatbot-plus.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  }
+}
