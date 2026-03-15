@@ -246,7 +246,10 @@
       return urlParams.get('company_slug') || 'test-podjetje';
     }
 
-    ChatbotPlus.init({ companySlug: getCompanySlug() });
+    ChatbotPlus.init({
+      companySlug: getCompanySlug(),
+      webhookUrl: '/api/chat'
+    });
   </script>
 </body>
 </html>

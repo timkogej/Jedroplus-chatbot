@@ -6,7 +6,10 @@
  * Usage:
  *   <script src="chatbot-plus.js"></script>
  *   <script>
- *     ChatbotPlus.init({ companySlug: 'my-company' });
+ *     ChatbotPlus.init({
+ *       companySlug: 'my-company',
+ *       webhookUrl: 'https://your-proxy/api/chat'  // REQUIRED
+ *     });
  *   </script>
  */
 
@@ -21,9 +24,9 @@
   const SUPABASE_URL = 'https://xdudtawctybnphdpvlwu.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkdWR0YXdjdHlibnBoZHB2bHd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0Mzg2NzMsImV4cCI6MjA3NDAxNDY3M30.zpvaAhMfY2uQBt0GGyCIPceIWuOfA5rqJ9MvvxKvycs';
 
-  // n8n webhook — absolute URL (required; widget is embedded on external domains like Webflow).
-  // Override via options.webhookUrl in ChatbotPlus.init() when using a deployed proxy server.
-  let API_ENDPOINT = 'https://tikej.app.n8n.cloud/webhook/chat-termini';
+  // n8n webhook — must be set via options.webhookUrl in ChatbotPlus.init().
+  // Never expose the n8n webhook URL directly; always use a secure proxy server.
+  let API_ENDPOINT = null;
   let API_KEY = null; // Set via options.apiKey — added as X-API-Key header on every n8n call.
 
   const FALLBACK_THEME = {
@@ -53,11 +56,13 @@
       sendError: 'Sporočila ni bilo mogoče poslati. Prosim poskusite znova.',
       connectionError: 'Povezava ni uspela. Prosimo, poskusite znova.',
       openChat: 'Odpri klepet',
-      closeChat: 'Zapri klepet'
+      closeChat: 'Zapri klepet',
+      confirmBooking: 'Potrdi',
+      changeBooking: 'Spremeni'
     },
     en: {
       suggestions: [
-        'How can you help?',
+        'Book an appointment',
         'Contact information',
         'Working hours',
         'Pricing'
@@ -69,11 +74,13 @@
       sendError: 'Could not send message. Please try again.',
       connectionError: 'Connection failed. Please try again.',
       openChat: 'Open chat',
-      closeChat: 'Close chat'
+      closeChat: 'Close chat',
+      confirmBooking: 'Confirm',
+      changeBooking: 'Change'
     },
     de: {
       suggestions: [
-        'Wie können Sie helfen?',
+        'Termin buchen',
         'Kontaktinformationen',
         'Öffnungszeiten',
         'Preisliste'
@@ -85,11 +92,13 @@
       sendError: 'Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.',
       connectionError: 'Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.',
       openChat: 'Chat öffnen',
-      closeChat: 'Chat schließen'
+      closeChat: 'Chat schließen',
+      confirmBooking: 'Bestätigen',
+      changeBooking: 'Ändern'
     },
     hr: {
       suggestions: [
-        'Kako možete pomoći?',
+        'Rezerviraj termin',
         'Kontakt podaci',
         'Radno vrijeme',
         'Cjenik usluga'
@@ -101,11 +110,13 @@
       sendError: 'Poruka nije mogla biti poslana. Molimo pokušajte ponovo.',
       connectionError: 'Povezivanje nije uspjelo. Molimo pokušajte ponovo.',
       openChat: 'Otvori chat',
-      closeChat: 'Zatvori chat'
+      closeChat: 'Zatvori chat',
+      confirmBooking: 'Potvrdi',
+      changeBooking: 'Promijeni'
     },
     it: {
       suggestions: [
-        'Come potete aiutare?',
+        'Prenota un appuntamento',
         'Informazioni di contatto',
         'Orari di lavoro',
         'Listino prezzi'
@@ -117,7 +128,9 @@
       sendError: 'Impossibile inviare il messaggio. Per favore riprova.',
       connectionError: 'Connessione fallita. Per favore riprova.',
       openChat: 'Apri chat',
-      closeChat: 'Chiudi chat'
+      closeChat: 'Chiudi chat',
+      confirmBooking: 'Conferma',
+      changeBooking: 'Modifica'
     }
   };
 
@@ -355,9 +368,16 @@
 
   class ChatbotPlusWidget {
     constructor(options = {}) {
+      // SECURITY: webhookUrl is required — never expose n8n URL directly
+      if (!options.webhookUrl) {
+        console.error('[Chatbot+] ❌ SECURITY ERROR: webhookUrl is required!');
+        console.error('[Chatbot+] Usage: ChatbotPlus.init({ companySlug: "x", webhookUrl: "https://your-proxy/api/chat" })');
+        throw new Error('ChatbotPlus: webhookUrl is required for security reasons');
+      }
+
       // Configuration
       this.companySlug = options.companySlug || getCompanySlugFromUrl();
-      if (options.webhookUrl) API_ENDPOINT = options.webhookUrl;
+      API_ENDPOINT = options.webhookUrl;
       if (options.apiKey) API_KEY = options.apiKey;
       this.sessionId = sessionStorage.getItem('chatbot-plus-session-id') || generateSessionId();
       this.suggestions = options.suggestions || getSuggestionsForLanguage('sl');
@@ -792,6 +812,8 @@
     }
 
     async handleAcceptConsent() {
+      // Guard against double-clicks / repeated invocations
+      if (this.consentGiven === 'accepted') return;
       const now = new Date().toISOString();
       try {
         localStorage.setItem('jedroplus_chatbot_consent', 'accepted');
@@ -808,7 +830,9 @@
         this.consentArea = null;
       }
 
-      // Insert real input container before the footer
+      // Insert real input container before the footer (remove any existing first)
+      const existingInput = this.window.querySelector('.chatbot-plus-input-container');
+      if (existingInput) existingInput.remove();
       const footer = this.window.querySelector('.chatbot-plus-powered');
       const inputContainer = this.createInputContainer();
       this.window.insertBefore(inputContainer, footer);
@@ -856,6 +880,12 @@
       if (this.suggestionsContainer) {
         this.suggestionsContainer.innerHTML = '';
         this.suggestionsContainer.style.display = 'none';
+      }
+
+      // Remove any existing consent area (prevents duplicates on repeated clicks)
+      if (this.consentArea) {
+        this.consentArea.remove();
+        this.consentArea = null;
       }
 
       // Show consent notice before footer
@@ -1211,8 +1241,40 @@
         // CRITICAL: deep-clone full state to prevent partial sends
         state: stateToSend ? JSON.parse(JSON.stringify(stateToSend)) : null,
         executionMode: 'production',
+        ...(this.honeypotValue && { website: this.honeypotValue }),
         ...(extraFields || {})
       };
+    }
+
+    /**
+     * Sanitize user input to prevent XSS and injection.
+     * @param {string} text - Raw user input
+     * @returns {string} - Sanitized text
+     */
+    sanitizeInput(text) {
+      if (typeof text !== 'string') return '';
+      return text
+        .replace(/<[^>]*>/g, '')
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/\bon\w+\s*=/gi, '')
+        .trim()
+        .slice(0, 2000);
+    }
+
+    /**
+     * Validate and sanitize response from backend.
+     * @param {Object} response - Backend response
+     * @returns {boolean} - Is valid
+     */
+    validateResponse(response) {
+      if (!response || typeof response !== 'object') return false;
+      if (response.message && typeof response.message === 'string') {
+        response.message = response.message
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+          .replace(/on\w+\s*=/gi, '');
+      }
+      return true;
     }
 
     /**
@@ -1221,13 +1283,14 @@
      * Always sends the FULL deep-cloned state.
      */
     async sendMessage(userText) {
-      if (!userText || this.sending || !this.messagesContainer) return;
+      const sanitizedText = this.sanitizeInput(userText);
+      if (!sanitizedText || this.sending || !this.messagesContainer) return;
 
       // Add user message to UI
       const userMessage = {
         id: this.generateMessageId(),
         role: 'user',
-        text: userText,
+        text: sanitizedText,
         createdAt: new Date()
       };
       this.messages.push(userMessage);
@@ -1242,7 +1305,7 @@
       this.removeQuickReplies();
 
       // Build payload with FULL state (deep-cloned inside buildWebhookPayload)
-      const payload = this.buildWebhookPayload(userText);
+      const payload = this.buildWebhookPayload(sanitizedText);
 
       // Set sending state — disable all interactive elements
       this.sending = true;
@@ -1280,6 +1343,13 @@
     }
 
     processN8nResponse(data) {
+      if (!this.validateResponse(data)) {
+        console.error('[Chatbot+] Invalid response from backend');
+        this.hideTypingIndicator();
+        this.addErrorMessage(this.translations.sendError);
+        return;
+      }
+
       // Always persist FULL state from response
       if (data.state != null) {
         this.chatState = data.state;
@@ -1341,8 +1411,8 @@
       container.className = 'chatbot-plus-quick-replies';
 
       const buttons = [
-        { label: 'Potrdi', value: 'POTRDI', variant: 'primary' },
-        { label: 'Spremeni', value: 'SPREMENI', variant: 'secondary' }
+        { label: this.translations.confirmBooking, value: 'POTRDI', variant: 'primary' },
+        { label: this.translations.changeBooking, value: 'SPREMENI', variant: 'secondary' }
       ];
 
       buttons.forEach(btn => {
@@ -1641,7 +1711,8 @@
     const script = document.querySelector('script[data-chatbot-plus-auto-init]');
     if (script) {
       const companySlug = script.getAttribute('data-company-slug');
-      window.ChatbotPlus.init({ companySlug });
+      const webhookUrl = script.getAttribute('data-webhook-url');
+      window.ChatbotPlus.init({ companySlug, webhookUrl });
     }
   });
 
