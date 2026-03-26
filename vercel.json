@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": ".",
   "builds": [
     {
       "src": "api/chat.js",
@@ -10,6 +11,14 @@
     {
       "src": "/api/chat",
       "dest": "/api/chat.js"
+    },
+    {
+      "src": "/(.*\\.(js|css|html|ico|svg|png|jpg))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
     }
   ]
 }
