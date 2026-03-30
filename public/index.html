@@ -242,6 +242,11 @@
   <script src="chatbot-plus.js"></script>
   <script>
     function getCompanySlug() {
+      const parts = window.location.pathname.split('/');
+      const chatbotIndex = parts.indexOf('chatbot');
+      if (chatbotIndex !== -1 && parts[chatbotIndex + 1]) {
+        return parts[chatbotIndex + 1];
+      }
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get('company_slug') || 'test-podjetje';
     }
