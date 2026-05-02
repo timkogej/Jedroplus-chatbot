@@ -7,7 +7,7 @@ const https = require('https');
 const url = require('url');
 
 const PORT = 8080;
-const N8N_WEBHOOK = 'https://tikej.app.n8n.cloud/webhook/chat-termini';
+const N8N_WEBHOOK = 'https://n8n.jedroplus.com/webhook/chat-termini';
 const N8N_API_KEY = process.env.N8N_WEBHOOK_API_KEY;
 
 const MIME_TYPES = {

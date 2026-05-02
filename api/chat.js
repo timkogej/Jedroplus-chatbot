@@ -1,7 +1,7 @@
 const https = require('https');
 const { URL } = require('url');
 
-const API_TARGET = 'https://tikej.app.n8n.cloud/webhook/chat-termini';
+const API_TARGET = 'https://n8n.jedroplus.com/webhook/chat-termini';
 const N8N_API_KEY = process.env.N8N_WEBHOOK_API_KEY;
 const ALLOWED_DOMAINS = (process.env.ALLOWED_DOMAINS || '')
   .split(',')

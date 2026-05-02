@@ -40,6 +40,17 @@
     borderRadius: '24px'
   };
 
+  const DEMO_THEME = {
+    bg: { from: '#ffffff', to: '#ffffff' },
+    userBubble: { from: '#6D28D9', to: '#06B6D4' },
+    userMessageBg: { from: '#6D28D9', to: '#06B6D4' },
+    botBubble: { from: '#6D28D9', to: '#06B6D4' },
+    accent: { from: '#6D28D9', to: '#06B6D4' },
+    textColor: '#1f2937',
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    borderRadius: '24px'
+  };
+
   // Translations by language
   const TRANSLATIONS = {
     sl: {
@@ -199,7 +210,7 @@
     }
     // Fallback to URL parameter
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('company_slug') || 'test-podjetje';
+    return urlParams.get('company_slug') || null;
   }
 
   /**
@@ -368,17 +379,23 @@
 
   class ChatbotPlusWidget {
     constructor(options = {}) {
-      // SECURITY: webhookUrl is required — never expose n8n URL directly
-      if (!options.webhookUrl) {
+      // Detect slug — demo mode activates when no slug is provided anywhere
+      const slug = options.companySlug || getCompanySlugFromUrl();
+      this.isDemoMode = !slug;
+
+      // SECURITY: webhookUrl is required for non-demo mode
+      if (!this.isDemoMode && !options.webhookUrl) {
         console.error('[Chatbot+] ❌ SECURITY ERROR: webhookUrl is required!');
         console.error('[Chatbot+] Usage: ChatbotPlus.init({ companySlug: "x", webhookUrl: "https://your-proxy/api/chat" })');
         throw new Error('ChatbotPlus: webhookUrl is required for security reasons');
       }
 
       // Configuration
-      this.companySlug = options.companySlug || getCompanySlugFromUrl();
-      API_ENDPOINT = options.webhookUrl;
-      if (options.apiKey) API_KEY = options.apiKey;
+      this.companySlug = slug;
+      if (!this.isDemoMode) {
+        API_ENDPOINT = options.webhookUrl;
+        if (options.apiKey) API_KEY = options.apiKey;
+      }
       this.sessionId = sessionStorage.getItem('chatbot-plus-session-id') || generateSessionId();
       this.suggestions = options.suggestions || getSuggestionsForLanguage('sl');
 
@@ -435,7 +452,17 @@
         // Load CSS if not already loaded
         this.loadStyles();
 
-        if (this.consentGiven === 'accepted') {
+        if (this.isDemoMode) {
+          // Demo mode: fixed theme, no Supabase, no n8n
+          this.chatTheme = DEMO_THEME;
+          this.chatBotName = 'Chatbot+';
+          this.messages.push({
+            id: this.generateMessageId(),
+            role: 'assistant',
+            text: 'Vpišite slug vašega podjetja in omogočite najboljšega chatbota za vaše stranke.',
+            createdAt: new Date()
+          });
+        } else if (this.consentGiven === 'accepted') {
           // Full bootstrap: fetch theme from Supabase + call n8n
           await this.bootstrap();
         } else {
@@ -668,6 +695,7 @@
       // Create container
       this.container = document.createElement('div');
       this.container.className = 'chatbot-plus-container';
+      if (this.isDemoMode) this.container.classList.add('chatbot-plus-demo');
       this.container.setAttribute('role', 'complementary');
       this.container.setAttribute('aria-label', 'Chat widget');
 
@@ -720,7 +748,12 @@
       this.suggestionsContainer.className = 'chatbot-plus-suggestions';
       this.window.appendChild(this.suggestionsContainer);
 
-      if (this.consentGiven !== 'accepted') {
+      if (this.isDemoMode) {
+        // Demo mode: disabled input, static welcome message, no consent needed
+        const demoNotice = this.createDemoInputNotice();
+        this.window.appendChild(demoNotice);
+        this.renderMessages();
+      } else if (this.consentGiven !== 'accepted') {
         // Consent notice replaces input area
         this.consentArea = this.createConsentInputNotice();
         this.window.appendChild(this.consentArea);
@@ -769,14 +802,16 @@
       const actions = document.createElement('div');
       actions.className = 'chatbot-plus-header-actions';
 
-      // Privacy settings button
-      const privacyBtn = document.createElement('button');
-      privacyBtn.className = 'chatbot-plus-close-btn chatbot-plus-privacy-btn';
-      privacyBtn.setAttribute('aria-label', 'Nastavitve zasebnosti');
-      privacyBtn.setAttribute('title', 'Nastavitve zasebnosti');
-      privacyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-      privacyBtn.addEventListener('click', () => this.reopenConsentDialog());
-      actions.appendChild(privacyBtn);
+      // Privacy settings button (hidden in demo mode)
+      if (!this.isDemoMode) {
+        const privacyBtn = document.createElement('button');
+        privacyBtn.className = 'chatbot-plus-close-btn chatbot-plus-privacy-btn';
+        privacyBtn.setAttribute('aria-label', 'Nastavitve zasebnosti');
+        privacyBtn.setAttribute('title', 'Nastavitve zasebnosti');
+        privacyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        privacyBtn.addEventListener('click', () => this.reopenConsentDialog());
+        actions.appendChild(privacyBtn);
+      }
 
       // Close button
       const closeBtn = document.createElement('button');
@@ -808,6 +843,34 @@
       `;
       const acceptBtn = container.querySelector('.chatbot-plus-consent-accept-simple');
       acceptBtn.addEventListener('click', () => this.handleAcceptConsent());
+      return container;
+    }
+
+    createDemoInputNotice() {
+      const container = document.createElement('div');
+      container.className = 'chatbot-plus-demo-input-notice';
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'chatbot-plus-input-wrapper';
+
+      const fakeInput = document.createElement('input');
+      fakeInput.type = 'text';
+      fakeInput.className = 'chatbot-plus-input';
+      fakeInput.placeholder = 'Demo način – vpišite slug za aktivacijo...';
+      fakeInput.disabled = true;
+      fakeInput.setAttribute('aria-label', 'Demo vhodno polje');
+
+      const fakeBtn = document.createElement('button');
+      fakeBtn.className = 'chatbot-plus-send-btn';
+      fakeBtn.disabled = true;
+      fakeBtn.setAttribute('aria-label', 'Pošlji');
+      fakeBtn.innerHTML = ICONS.send;
+      fakeBtn.style.background = toGradient(DEMO_THEME.accent);
+
+      wrapper.appendChild(fakeInput);
+      wrapper.appendChild(fakeBtn);
+      container.appendChild(wrapper);
+
       return container;
     }
 

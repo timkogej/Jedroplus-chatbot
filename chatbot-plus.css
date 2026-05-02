@@ -1101,6 +1101,72 @@
 }
 
 /* ========================================
+   DEMO MODE
+   ======================================== */
+
+/* Window border so white widget is visible on white pages */
+.chatbot-plus-demo .chatbot-plus-window {
+  box-shadow:
+    0 20px 60px rgba(109, 40, 217, 0.15),
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(109, 40, 217, 0.1);
+}
+
+/* Dark text on white header */
+.chatbot-plus-demo .chatbot-plus-bot-name {
+  color: #1f2937 !important;
+}
+
+.chatbot-plus-demo .chatbot-plus-status {
+  color: #6b7280 !important;
+}
+
+.chatbot-plus-demo .chatbot-plus-status-dot {
+  background: #10b981;
+}
+
+/* Header buttons visible on white */
+.chatbot-plus-demo .chatbot-plus-close-btn {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #374151 !important;
+}
+
+.chatbot-plus-demo .chatbot-plus-close-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Bot bubble: white text on gradient */
+.chatbot-plus-demo .chatbot-plus-message.is-bot .chatbot-plus-bubble {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Messages area on white background */
+.chatbot-plus-demo .chatbot-plus-messages {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+/* Powered-by footer on white */
+.chatbot-plus-demo .chatbot-plus-powered {
+  color: #9ca3af !important;
+}
+
+/* Demo disabled input */
+.chatbot-plus-demo-input-notice {
+  padding: 16px 20px 20px;
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.chatbot-plus-demo-input-notice .chatbot-plus-input-wrapper {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ========================================
    ACCESSIBILITY
    ======================================== */
 
