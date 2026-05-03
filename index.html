@@ -241,11 +241,19 @@
   <!-- Load Chatbot+ Widget -->
   <script src="chatbot-plus.js"></script>
   <script>
-    const slug = new URLSearchParams(window.location.search).get('company_slug');
-    ChatbotPlus.init(slug
-      ? { companySlug: slug, webhookUrl: 'https://jedroplus-chatbot.vercel.app/api/chat' }
-      : {}
-    );
+    function getCompanySlug() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      if (parts.length > 0) {
+        return parts[0];
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('company_slug') || '';
+    }
+
+    ChatbotPlus.init({
+      companySlug: getCompanySlug(),
+      webhookUrl: 'https://chatbot.jedroplus.com/api/chat'
+    });
   </script>
 </body>
 </html>
