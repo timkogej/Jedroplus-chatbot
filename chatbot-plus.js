@@ -1790,7 +1790,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const script = document.querySelector('script[data-chatbot-plus-auto-init]');
     if (script) {
-      const companySlug = script.getAttribute('data-company-slug');
+      const companySlug = getCompanySlugFromUrl();
       const webhookUrl = script.getAttribute('data-webhook-url');
       window.ChatbotPlus.init({ companySlug, webhookUrl });
     }

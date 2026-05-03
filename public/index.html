@@ -247,12 +247,12 @@
         return parts[0];
       }
       const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('company_slug') || 'test-podjetje';
+      return urlParams.get('company_slug') || '';
     }
 
     ChatbotPlus.init({
       companySlug: getCompanySlug(),
-      webhookUrl: 'https://jedroplus-chatbot.vercel.app/api/chat'
+      webhookUrl: 'https://chatbot.jedroplus.com/api/chat'
     });
   </script>
 </body>
