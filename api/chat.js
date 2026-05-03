@@ -29,12 +29,14 @@ function isAllowedOrigin(origin) {
 module.exports = async function handler(req, res) {
   const origin = req.headers.origin || '';
 
-  // CORS headers
-  if (isAllowedOrigin(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
+  // CORS: echo back allowed origins, fall back to * for unlisted domains.
+  // The real security layer is N8N_API_KEY — CORS alone is not a secret.
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    isAllowedOrigin(origin) ? origin : '*'
+  );
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key');
   res.setHeader('Access-Control-Max-Age', '86400');
 
   if (req.method === 'OPTIONS') {
