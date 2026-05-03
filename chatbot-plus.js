@@ -16,6 +16,9 @@
 (function(window, document) {
   'use strict';
 
+  // Capture the script element before any async code runs
+  const _currentScript = document.currentScript;
+
   // ========================================
   // CONFIGURATION & CONSTANTS
   // ========================================
@@ -200,15 +203,29 @@
   }
 
   /**
-   * Get company slug from URL path /chatbot/{slug} or URL parameter
+   * Get company slug from the script's own src URL, page path, or URL parameter.
+   * Reading from the script src is the correct approach for embeddable widgets —
+   * the hosting page URL contains no slug info.
    */
   function getCompanySlugFromUrl() {
-    // First try to get slug from URL path: /chatbot/{slug}
+    // Primary: read slug from this script's own src URL
+    // e.g. <script src="chatbot-plus.js?slug=moje-podjetje">
+    const scriptEl = _currentScript || document.querySelector('script[src*="chatbot-plus"]');
+    if (scriptEl && scriptEl.src) {
+      try {
+        const scriptParams = new URL(scriptEl.src).searchParams;
+        const slugFromSrc = scriptParams.get('slug') || scriptParams.get('company_slug');
+        if (slugFromSrc) return slugFromSrc;
+      } catch (e) { /* invalid URL, continue */ }
+    }
+
+    // Fallback: URL path /chatbot/{slug} (for demo/local pages)
     const pathMatch = window.location.pathname.match(/\/chatbot\/([^\/]+)/);
     if (pathMatch && pathMatch[1]) {
       return pathMatch[1];
     }
-    // Fallback to URL parameter
+
+    // Fallback: page URL parameter
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('company_slug') || null;
   }
