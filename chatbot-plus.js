@@ -219,10 +219,10 @@
       } catch (e) { /* invalid URL, continue */ }
     }
 
-    // Fallback: URL path /chatbot/{slug} (for demo/local pages)
-    const pathMatch = window.location.pathname.match(/\/chatbot\/([^\/]+)/);
-    if (pathMatch && pathMatch[1]) {
-      return pathMatch[1];
+    // Fallback: chatbot.jedroplus.com/{slug} — slug is the first path segment
+    if (window.location.hostname === 'chatbot.jedroplus.com') {
+      const pathMatch = window.location.pathname.match(/^\/([^\/]+)/);
+      if (pathMatch && pathMatch[1]) return pathMatch[1];
     }
 
     // Fallback: page URL parameter
